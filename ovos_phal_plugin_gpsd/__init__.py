@@ -10,8 +10,8 @@ from mycroft_bus_client.message import Message
 
 
 class GPSDPlugin(PHALPlugin):
-    def __init__(self, bus=None):
-        super().__init__(bus, 'ovos-phal-plugin-gpsd')
+    def __init__(self, bus=None, config=None):
+        super().__init__(bus, 'ovos-phal-plugin-gpsd', config)
         places = self.config.get("decimal_places", 3)
         self.user_config = MycroftUserConfig()
         self.location = {}
