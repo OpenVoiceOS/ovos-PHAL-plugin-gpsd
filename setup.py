@@ -4,7 +4,7 @@ from setuptools import setup
 PLUGIN_ENTRY_POINT = 'ovos-phal-plugin-gpsd=ovos_phal_plugin_gpsd:GPSDPlugin'
 setup(
     name='ovos-phal-plugin-gpsd',
-    version='0.0.1a0',
+    version='0.0.1',
     description='A PHAL plugin for mycroft',
     url='https://github.com/OpenVoiceOS/ovos-PHAL-plugin-gpsd',
     author='JarbasAi',
