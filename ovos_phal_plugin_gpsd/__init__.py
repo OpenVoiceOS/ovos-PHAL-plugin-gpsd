@@ -4,15 +4,16 @@ import reverse_geocoder
 from gpsdclient import GPSDClient
 from ovos_utils.log import LOG
 from timezonefinder import TimezoneFinder
-
+from ovos_utils.configuration import MycroftUserConfig
 from ovos_plugin_manager.phal import PHALPlugin
+from mycroft_bus_client.message import Message
 
 
 class GPSDPlugin(PHALPlugin):
     def __init__(self, bus=None):
         super().__init__(bus, 'ovos-phal-plugin-gpsd')
-        self.config = {}
         places = self.config.get("decimal_places", 3)
+        self.user_config = MycroftUserConfig()
         self.location = {}
         self.tf = TimezoneFinder()
         self.gps = GPSDaemon(decimal_places=places)
@@ -61,8 +62,12 @@ class GPSDPlugin(PHALPlugin):
         if geocode:
             self.location["city"] = geocode
 
-        # TODO update config
-        self.emit("location", self.location)
+        # update user config
+        self.user_config["location"] = self.location
+        self.user_config.store()
+        self.bus.emit(Message("configuration.updated"))
+        self.bus.emit(Message("configuration.patch",
+                              {"config": dict(self.user_config)}))
 
 
 class GPSDaemon(threading.Thread):
