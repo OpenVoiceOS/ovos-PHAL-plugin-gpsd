@@ -6,7 +6,7 @@ from ovos_utils.log import LOG
 from timezonefinder import TimezoneFinder
 from ovos_utils.configuration import MycroftUserConfig
 from ovos_plugin_manager.phal import PHALPlugin
-from mycroft_bus_client.message import Message
+from ovos_bus_client.message import Message
 
 
 class GPSDPlugin(PHALPlugin):
