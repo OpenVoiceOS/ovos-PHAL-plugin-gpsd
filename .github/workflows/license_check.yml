@@ -9,3 +9,9 @@ jobs:
   license_check:
     uses: OpenVoiceOS/gh-automations/.github/workflows/license-check.yml@dev
     secrets: inherit
+    with:
+      # python-geoip-geolite2 (Armin Ronacher) is the BSD-licensed sibling of
+      # python-geoip but ships no license metadata, so pilosus tags it Error.
+      # Permissive false positive.
+      exclude_packages: >-
+        (?i:^python-geoip-geolite2([=<>!~ @;].*)?$)
