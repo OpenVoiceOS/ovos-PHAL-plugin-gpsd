@@ -11,7 +11,10 @@ jobs:
     secrets: inherit
     with:
       # python-geoip-geolite2 (Armin Ronacher) is the BSD-licensed sibling of
-      # python-geoip but ships no license metadata, so pilosus tags it Error.
-      # Permissive false positive.
+      # python-geoip but ships no license metadata, so pilosus tags it Error —
+      # a permissive false positive.
+      # reverse_geocoder is LGPL (WeakCopyleft) but is imported and used
+      # unmodified as a library, which imposes no copyleft on the importing
+      # plugin; it is required for offline reverse geocoding.
       exclude_packages: >-
-        (?i:^python-geoip-geolite2([=<>!~ @;].*)?$)
+        (?i:^python-geoip-geolite2([=<>!~ @;].*)?$)|(?i:^reverse_geocoder([=<>!~ @;].*)?$)
