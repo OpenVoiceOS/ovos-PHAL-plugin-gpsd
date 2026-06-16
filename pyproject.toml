@@ -20,7 +20,7 @@ classifiers = [
     "Programming Language :: Python :: 3"
 ]
 dependencies = [
-    "ovos-plugin-manager>=0.0.1",
+    "ovos-plugin-manager>=2.1.0,<3.0.0",
     "gpsdclient",
     "reverse_geocoder",
     "python-geoip-geolite2",
