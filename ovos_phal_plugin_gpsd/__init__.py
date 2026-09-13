@@ -4,7 +4,10 @@ import reverse_geocoder
 from gpsdclient import GPSDClient
 from ovos_utils.log import LOG
 from timezonefinder import TimezoneFinder
-from ovos_config.config import update_mycroft_config
+try:
+    from ovos_config.config import update_assistant_config
+except ImportError:  # ovos-config < 3.0.0a1
+    from ovos_config.config import update_mycroft_config as update_assistant_config
 from ovos_plugin_manager.phal import PHALPlugin
 from ovos_bus_client.message import Message
 
@@ -61,8 +64,8 @@ class GPSDPlugin(PHALPlugin):
         if geocode:
             self.location["city"] = geocode
 
-        # update user config
-        update_mycroft_config(config={"location": self.location}, bus=self.bus)
+        # store the location and send configuration.patch with only the changed key
+        update_assistant_config(config={"location": self.location}, bus=self.bus)
         self.bus.emit(Message("configuration.updated"))
 
 
