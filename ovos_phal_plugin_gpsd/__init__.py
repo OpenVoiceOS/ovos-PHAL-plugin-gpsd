@@ -4,7 +4,10 @@ import reverse_geocoder
 from gpsdclient import GPSDClient
 from ovos_utils.log import LOG
 from timezonefinder import TimezoneFinder
-from ovos_utils.configuration import MycroftUserConfig
+try:
+    from ovos_config.config import update_assistant_config
+except ImportError:  # ovos-config < 3.0.0a1
+    from ovos_config.config import update_mycroft_config as update_assistant_config
 from ovos_plugin_manager.phal import PHALPlugin
 from ovos_bus_client.message import Message
 
@@ -13,7 +16,6 @@ class GPSDPlugin(PHALPlugin):
     def __init__(self, bus=None, config=None):
         super().__init__(bus, 'ovos-phal-plugin-gpsd', config)
         places = self.config.get("decimal_places", 3)
-        self.user_config = MycroftUserConfig()
         self.location = {}
         self.tf = TimezoneFinder()
         self.gps = GPSDaemon(decimal_places=places)
@@ -62,19 +64,14 @@ class GPSDPlugin(PHALPlugin):
         if geocode:
             self.location["city"] = geocode
 
-        # update user config
-        self.user_config["location"] = self.location
-        self.user_config.store()
+        # store the location and send configuration.patch with only the changed key
+        update_assistant_config(config={"location": self.location}, bus=self.bus)
         self.bus.emit(Message("configuration.updated"))
-        self.bus.emit(Message("configuration.patch",
-                              {"config": dict(self.user_config)}))
 
 
 class GPSDaemon(threading.Thread):
     def __init__(self, decimal_places=5, host="127.0.0.1", port=2947, daemonic=True):
-        super(GPSDaemon, self).__init__()
-        if daemonic:
-            self.setDaemon(True)
+        super(GPSDaemon, self).__init__(daemon=daemonic)
         self.client = GPSDClient(host=host, port=port)
         self.data_points = []
         self.decimal_places = decimal_places
